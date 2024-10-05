@@ -41,8 +41,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Function to open the settings page
 function openSettingsPage() {
-    chrome.runtime.getURL('settings.html', function(url) {
-        chrome.tabs.create({ url: url });
+    chrome.runtime.getURL('settings.html', function (url) {
+        chrome.tabs.create({url: url});
     });
 }
 
@@ -151,14 +151,16 @@ function setupEventListeners() {
         const timeSinceLastAnalysis = currentTime - lastAnalysisTime;
 
         if (
-            (timeSinceLastAnalysis >= 5000 && (currentPrompt.endsWith('.') && wordCountDifference > 2)) ||
+            (timeSinceLastAnalysis >= 5000 &&
+                ((currentPrompt.endsWith('.') || currentPrompt.endsWith('!') || currentPrompt.endsWith('?'))
+                    && wordCountDifference > 2)) ||
             wordCountDifference >= 8
         ) {
             lastPrompt = currentPrompt;
             lastWordCount = currentWordCount;
             lastAnalysisTime = currentTime;
 
-            analyzePrompt(currentPrompt).then(({ score, suggestions, error }) => {
+            analyzePrompt(currentPrompt).then(({score, suggestions, error}) => {
                 if (!error) {
                     displayFeedback(score, suggestions);
                 } else {
@@ -389,7 +391,7 @@ async function analyzePrompt(prompt) {
                     showErrorNotification('API Error: ' + data.error.message);
                     errorNotified = true;
                 }
-                return { error: true };
+                return {error: true};
             }
 
             const analysis = data.choices[0].message.content;
@@ -405,14 +407,14 @@ async function analyzePrompt(prompt) {
             if (score !== null) {
                 console.log(`API returned score: ${score}`);
                 console.log(`API returned suggestions: ${suggestions}`);
-                return { score, suggestions, error: false };
+                return {score, suggestions, error: false};
             } else {
                 console.warn("Received invalid score from API:", analysis);
                 if (!errorNotified) {
                     showErrorNotification('Invalid response from API. Please check your API key.');
                     errorNotified = true;
                 }
-                return { error: true };
+                return {error: true};
             }
         } catch (error) {
             console.error('API Error:', error);
@@ -420,7 +422,7 @@ async function analyzePrompt(prompt) {
                 showErrorNotification('Error communicating with API. Please check your API key.');
                 errorNotified = true;
             }
-            return { error: true };
+            return {error: true};
         }
     } else {
         console.log("API Key not provided. Using basic prompt analysis.");
@@ -428,7 +430,7 @@ async function analyzePrompt(prompt) {
             showErrorNotification('API Key not provided. Please enter your API key in the settings page.');
             errorNotified = true;
         }
-        return { error: true };
+        return {error: true};
     }
 }
 
@@ -447,7 +449,7 @@ function showErrorNotification(message) {
 
         const settingsLink = document.getElementById('settingsLink');
         settingsLink.addEventListener('click', () => {
-            chrome.runtime.sendMessage({ action: 'openSettings' });
+            chrome.runtime.sendMessage({action: 'openSettings'});
             notification.remove();
             errorNotified = false;
         });
@@ -497,7 +499,7 @@ function basicAnalyzePrompt(prompt) {
     score = ((criteriaMet / totalCriteria) * 100) + 30; // Adjusted to give higher grades
     if (score > 100) score = 100;
     console.log(`Basic prompt score: ${score}`);
-    return { score: Math.round(score), suggestions: suggestions.slice(0, 2), error: false };
+    return {score: Math.round(score), suggestions: suggestions.slice(0, 2), error: false};
 }
 
 // Criterion functions
@@ -532,8 +534,8 @@ function savePromptData(prompt, score) {
         });
         // Keep only the last 100 entries
         if (history.length > 100) history.shift();
-        chrome.storage.local.set({ promptHistory: history }, () => {
-            console.log("Prompt data saved.", { prompt, score });
+        chrome.storage.local.set({promptHistory: history}, () => {
+            console.log("Prompt data saved.", {prompt, score});
         });
     });
 }
