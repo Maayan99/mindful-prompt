@@ -1,0 +1,551 @@
+/* styles.css */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* General Styles */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #34495e;
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --light-bg: #f5f7fa;
+    --dark-bg: #2c3e50;
+    --text-light: #ecf0f1;
+    --text-dark: #2c3e50;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* Enhanced Progress Bar Styles */
+#promptProgressBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 16px; /* Increased height */
+    background-color: rgba(236, 240, 241, 0.2);
+    z-index: 1000;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--success-color), var(--secondary-color));
+    background-size: 200% 200%;
+    animation: gradientAnimation 5s ease infinite;
+    transition: width 0.5s ease-in-out;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.progress-bar-text {
+    position: absolute;
+    top: 18px; /* Adjusted for increased bar height */
+    right: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    opacity: 0.8;
+    transition: var(--transition);
+}
+
+/* Suggestion Panel Styles */
+#suggestionPanel {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 320px;
+    background: linear-gradient(135deg, #e09, #d0e);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 20px;
+    z-index: 1000;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+#suggestionPanel.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#suggestionPanel.hide {
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+#suggestionHeader {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+#suggestionContent p {
+    margin: 0 0 15px 0;
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    transition: var(--transition);
+    position: relative;
+}
+
+#suggestionContent p::before {
+    content: '✨';
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+}
+
+#suggestionContent p:last-child {
+    margin-bottom: 0;
+}
+
+#suggestionContent p:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+/* Animate Suggestions */
+.animate-suggestions {
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-15px); }
+    60% { transform: translateY(-7px); }
+}
+
+/* Suggestion Button Styles */
+#suggestionButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #e09, #d0e);
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+    display: none; /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 1000;
+}
+
+#suggestionButton:hover {
+    transform: scale(1.1);
+}
+
+#suggestionIcon {
+    font-size: 28px;
+    color: #fff;
+}
+
+/* Confetti Styles */
+#confettiCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2000;
+}
+
+/* Additional Enhancements */
+::selection {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--dark-bg);
+        color: var(--text-light);
+    }
+
+    #promptProgressBar {
+        background-color: rgba(44, 62, 80, 0.2);
+    }
+
+    .progress-bar-text {
+        color: var(--text-light);
+    }
+
+    #suggestionPanel {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+
+    #suggestionContent p {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+    }
+
+    #suggestionButton {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+
+    #suggestionIcon {
+        color: var(--text-light);
+    }
+}
+
+
+/* Confetti Styles */
+#confettiContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 2000;
+}
+
+.confetti {
+    position: absolute;
+    will-change: transform, opacity;
+    animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Popup and Settings Container Styles */
+.popup-container,
+.settings-container {
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    width: 350px;
+    text-align: center;
+    background: linear-gradient(135deg, #e09, #d0e);
+    color: #fff;
+    margin: 50px auto;
+}
+
+.popup-container h1,
+.settings-container h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.popup-container button,
+.settings-container button {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: var(--transition);
+    margin-top: 20px;
+}
+
+.popup-container button:hover,
+.settings-container button:hover {
+    background: var(--light-bg);
+    transform: translateY(-2px);
+}
+
+.popup-container .toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.popup-container .toggle-container span {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.settings-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transition: var(--transition);
+}
+
+.settings-container input[type="password"]::placeholder {
+    color: #f0f0f0;
+}
+
+.settings-container input[type="password"]:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.settings-container .api-key-info {
+    text-align: left;
+    margin-top: 30px;
+}
+
+.settings-container .api-key-info h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.settings-container .api-key-info ol {
+    margin-left: 20px;
+    list-style: decimal;
+}
+
+.settings-container .api-key-info li {
+    margin-bottom: 10px;
+}
+
+.settings-container .api-key-info a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.settings-container .api-key-info p {
+    margin-top: 15px;
+}
+
+/* Toast Notification Styles */
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: var(--success-color);
+    color: #ffffff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 3000;
+    right: 20px;
+    bottom: 30px;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+/* Error Notification Styles */
+.error-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(231, 76, 60, 0.95);
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    z-index: 3000;
+    max-width: 300px;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.error-notification p {
+    margin: 0 0 10px 0;
+}
+
+.error-notification button {
+    background-color: #fff;
+    color: rgba(231, 76, 60, 1);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+}
+
+.error-notification button:hover {
+    background-color: #ecf0f1;
+}
+
+/* Suggestion Button Animation */
+#suggestionButton.animate-button {
+    animation: bobbing 2s ease-in-out;
+}
+
+@keyframes bobbing {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-10px); }
+    50% { transform: translateY(0); }
+    75% { transform: translateY(-5px); }
+}
+
+/* Popup and Settings Styles */
+.popup-container,
+.settings-container {
+    font-family: 'Poppins', sans-serif;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    width: 400px;
+    text-align: center;
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+    color: #fff;
+    margin: 50px auto;
+}
+
+.popup-container h1,
+.settings-container h1 {
+    font-size: 28px;
+    margin-bottom: 30px;
+}
+
+.popup-container button,
+.settings-container button {
+    width: 100%;
+    padding: 15px;
+    background: #fff;
+    color: #16a085;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    transition: var(--transition);
+    margin-top: 20px;
+}
+
+.popup-container button:hover,
+.settings-container button:hover {
+    background: #ecf0f1;
+    transform: translateY(-2px);
+}
+
+.popup-container .toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.popup-container .toggle-container span {
+    margin-left: 15px;
+    font-size: 18px;
+}
+
+.settings-container input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transition: var(--transition);
+}
+
+.settings-container input[type="password"]::placeholder {
+    color: #f0f0f0;
+}
+
+.settings-container input[type="password"]:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.settings-container .api-key-info {
+    text-align: left;
+    margin-top: 30px;
+}
+
+.settings-container .api-key-info h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.settings-container .api-key-info ol {
+    margin-left: 20px;
+    list-style: decimal;
+}
+
+.settings-container .api-key-info li {
+    margin-bottom: 10px;
+}
+
+.settings-container .api-key-info a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.settings-container .api-key-info p {
+    margin-top: 15px;
+}
+
+/* Toast Notification Styles */
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #2ecc71;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 3000;
+    right: 20px;
+    bottom: 30px;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+
+.toast.show {
+    visibility: visible;
+    opacity: 1;
+}
+
