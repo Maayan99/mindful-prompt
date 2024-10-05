@@ -449,7 +449,7 @@ function showErrorNotification(message) {
 
         const settingsLink = document.getElementById('settingsLink');
         settingsLink.addEventListener('click', () => {
-            chrome.runtime.sendMessage({action: 'openSettings'});
+            chrome.runtime.sendMessage({action: 'openOptionsPage'});
             notification.remove();
             errorNotified = false;
         });
