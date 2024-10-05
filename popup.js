@@ -2,52 +2,42 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const toggleAnalysis = document.getElementById('toggleAnalysis');
-    const toggleLabel = document.getElementById('toggleLabel');
     const settingsButton = document.getElementById('settingsButton');
 
-    // Load the current state
-    chrome.storage.sync.get('analysisEnabled', (data) => {
+    // Load current settings
+    chrome.storage.sync.get(['analysisEnabled'], (data) => {
         toggleAnalysis.checked = data.analysisEnabled !== false;
-        updateToggleLabel();
     });
 
     // Listen for toggle changes
-    toggleAnalysis.addEventListener('change', (event) => {
-        chrome.storage.sync.set({ analysisEnabled: event.target.checked }, () => {
-            console.log(`Analysis Enabled set to: ${event.target.checked}`);
-            updateToggleLabel();
-            showToast(event.target.checked ? 'Analysis Enabled!' : 'Analysis Disabled.');
+    toggleAnalysis.addEventListener('change', () => {
+        const isEnabled = toggleAnalysis.checked;
+        chrome.storage.sync.set({ analysisEnabled: isEnabled }, () => {
+            console.log(`Analysis enabled set to: ${isEnabled}`);
+            showToast(`Analysis ${isEnabled ? 'enabled' : 'disabled'}.`);
         });
     });
 
-    function updateToggleLabel() {
-        const isChecked = toggleAnalysis.checked;
-        toggleLabel.textContent = isChecked ? 'Analysis Enabled' : 'Analysis Disabled';
-    }
-
-    // Open settings page
+    // Listen for settings button click
     settingsButton.addEventListener('click', () => {
-        chrome.runtime.openOptionsPage();
+        chrome.runtime.sendMessage({ action: 'openSettings' });
     });
-
-    // Function to show toast notifications
-    function showToast(message) {
-        // Create toast container if it doesn't exist
-        let toast = document.getElementById('toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toast';
-            toast.className = 'toast';
-            document.body.appendChild(toast);
-        }
-
-        // Set the message and show the toast
-        toast.textContent = message;
-        toast.className = 'toast show';
-
-        // Hide the toast after 3 seconds
-        setTimeout(() => {
-            toast.className = toast.className.replace('show', '');
-        }, 3000);
-    }
 });
+
+// Function to show toast notifications
+function showToast(message) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}

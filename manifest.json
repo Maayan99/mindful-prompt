@@ -3,8 +3,14 @@
   "name": "Mindful Prompt",
   "version": "1.1",
   "description": "Enhance your AI interactions by crafting better prompts.",
-  "permissions": ["storage"],
   "host_permissions": ["https://api.openai.com/*"],
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://chat.openai.com/*", "https://chatgpt.com/*"],

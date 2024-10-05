@@ -1,4 +1,5 @@
 /* styles.css */
+
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
@@ -62,7 +63,7 @@
     bottom: 80px;
     right: 20px;
     width: 320px;
-    background: linear-gradient(135deg, #e09, #d0e);
+    background: linear-gradient(135deg, #1abc9c, #16a085);
     border-radius: 16px;
     box-shadow: var(--shadow);
     padding: 20px;
@@ -122,17 +123,6 @@
     box-shadow: var(--shadow);
 }
 
-/* Animate Suggestions */
-.animate-suggestions {
-    animation: bounce 1s ease-in-out;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-15px); }
-    60% { transform: translateY(-7px); }
-}
-
 /* Suggestion Button Styles */
 #suggestionButton {
     position: fixed;
@@ -140,7 +130,7 @@
     right: 20px;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #e09, #d0e);
+    background: linear-gradient(135deg, #1abc9c, #16a085);
     border-radius: 50%;
     box-shadow: var(--shadow);
     display: none; /* Hidden by default */
@@ -159,74 +149,6 @@
     font-size: 28px;
     color: #fff;
 }
-
-/* Confetti Styles */
-#confettiCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 2000;
-}
-
-/* Additional Enhancements */
-::selection {
-    background-color: var(--primary-color);
-    color: #ffffff;
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--light-bg);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-color);
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: var(--dark-bg);
-        color: var(--text-light);
-    }
-
-    #promptProgressBar {
-        background-color: rgba(44, 62, 80, 0.2);
-    }
-
-    .progress-bar-text {
-        color: var(--text-light);
-    }
-
-    #suggestionPanel {
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-    }
-
-    #suggestionContent p {
-        background: rgba(255, 255, 255, 0.1);
-        color: var(--text-light);
-    }
-
-    #suggestionButton {
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-    }
-
-    #suggestionIcon {
-        color: var(--text-light);
-    }
-}
-
 
 /* Confetti Styles */
 #confettiContainer {
@@ -255,126 +177,6 @@
         transform: translateY(100vh) rotate(360deg);
         opacity: 0;
     }
-}
-
-/* Popup and Settings Container Styles */
-.popup-container,
-.settings-container {
-    font-family: 'Poppins', sans-serif;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    width: 350px;
-    text-align: center;
-    background: linear-gradient(135deg, #e09, #d0e);
-    color: #fff;
-    margin: 50px auto;
-}
-
-.popup-container h1,
-.settings-container h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-.popup-container button,
-.settings-container button {
-    width: 100%;
-    padding: 12px;
-    background: #fff;
-    color: var(--primary-color);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    transition: var(--transition);
-    margin-top: 20px;
-}
-
-.popup-container button:hover,
-.settings-container button:hover {
-    background: var(--light-bg);
-    transform: translateY(-2px);
-}
-
-.popup-container .toggle-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.popup-container .toggle-container span {
-    margin-left: 10px;
-    font-size: 16px;
-}
-
-.settings-container input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    margin-bottom: 15px;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    transition: var(--transition);
-}
-
-.settings-container input[type="password"]::placeholder {
-    color: #f0f0f0;
-}
-
-.settings-container input[type="password"]:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.settings-container .api-key-info {
-    text-align: left;
-    margin-top: 30px;
-}
-
-.settings-container .api-key-info h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.settings-container .api-key-info ol {
-    margin-left: 20px;
-    list-style: decimal;
-}
-
-.settings-container .api-key-info li {
-    margin-bottom: 10px;
-}
-
-.settings-container .api-key-info a {
-    color: #fff;
-    text-decoration: underline;
-}
-
-.settings-container .api-key-info p {
-    margin-top: 15px;
-}
-
-/* Toast Notification Styles */
-.toast {
-    visibility: hidden;
-    min-width: 250px;
-    background-color: var(--success-color);
-    color: #ffffff;
-    text-align: center;
-    border-radius: 8px;
-    padding: 16px;
-    position: fixed;
-    z-index: 3000;
-    right: 20px;
-    bottom: 30px;
-    font-size: 16px;
-    opacity: 0;
-    transition: opacity 0.5s, visibility 0.5s;
 }
 
 /* Error Notification Styles */
@@ -412,6 +214,12 @@
     background-color: #ecf0f1;
 }
 
+/* Fade In Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* Suggestion Button Animation */
 #suggestionButton.animate-button {
     animation: bobbing 2s ease-in-out;
@@ -424,7 +232,7 @@
     75% { transform: translateY(-5px); }
 }
 
-/* Popup and Settings Styles */
+/* Popup and Settings Container Styles */
 .popup-container,
 .settings-container {
     font-family: 'Poppins', sans-serif;
@@ -526,6 +334,65 @@
     margin-top: 15px;
 }
 
+/* Status Message Styles */
+.settings-container #statusMessage.success {
+    color: #2ecc71;
+}
+
+.settings-container #statusMessage.error {
+    color: #e74c3c;
+}
+
+/* Switch Styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2ecc71;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2ecc71;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
 /* Toast Notification Styles */
 .toast {
     visibility: hidden;
@@ -549,3 +416,43 @@
     opacity: 1;
 }
 
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--dark-bg);
+        color: var(--text-light);
+    }
+
+    #promptProgressBar {
+        background-color: rgba(44, 62, 80, 0.2);
+    }
+
+    .progress-bar-text {
+        color: var(--text-light);
+    }
+
+    #suggestionPanel {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+
+    #suggestionContent p {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+    }
+
+    #suggestionButton {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+
+    #suggestionIcon {
+        color: var(--text-light);
+    }
+
+    .error-notification {
+        background-color: rgba(192, 57, 43, 0.95);
+    }
+
+    .settings-container {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+}

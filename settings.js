@@ -5,50 +5,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
     const statusMessage = document.getElementById('statusMessage');
 
-    // Load existing API key
-    chrome.storage.sync.get('apiKey', (data) => {
-        if (data.apiKey) {
-            apiKeyInput.value = data.apiKey;
-        }
+    // Load current API key
+    chrome.storage.sync.get(['apiKey'], (data) => {
+        apiKeyInput.value = data.apiKey || '';
     });
 
-    // Save API Key
+    // Listen for save button click
     saveApiKeyBtn.addEventListener('click', () => {
         const apiKey = apiKeyInput.value.trim();
         if (apiKey) {
-            chrome.storage.sync.set({ apiKey }, () => {
-                statusMessage.textContent = 'API key saved successfully!';
-                statusMessage.style.color = '#2ecc71';
-                console.log('API Key saved.');
-                showToast('API Key saved successfully!');
+            chrome.storage.sync.set({ apiKey: apiKey }, () => {
+                console.log('API Key saved:', apiKey);
+                showStatusMessage('API Key saved successfully.', 'success');
             });
         } else {
-            statusMessage.textContent = 'Please enter a valid API key.';
-            statusMessage.style.color = '#e74c3c';
-            console.warn('Invalid API Key attempt.');
-            showToast('Please enter a valid API key.', true);
+            showStatusMessage('Please enter a valid API key.', 'error');
         }
     });
-
-    // Function to show toast notifications
-    function showToast(message, isError = false) {
-        // Create toast container if it doesn't exist
-        let toast = document.getElementById('toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toast';
-            toast.className = 'toast';
-            document.body.appendChild(toast);
-        }
-
-        // Set the message and show the toast
-        toast.textContent = message;
-        toast.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
-        toast.className = 'toast show';
-
-        // Hide the toast after 3 seconds
-        setTimeout(() => {
-            toast.className = toast.className.replace('show', '');
-        }, 3000);
-    }
 });
+
+// Function to show status messages
+function showStatusMessage(message, type) {
+    const statusMessage = document.getElementById('statusMessage');
+    statusMessage.textContent = message;
+    statusMessage.className = type; // 'success' or 'error'
+
+    // Clear message after 3 seconds
+    setTimeout(() => {
+        statusMessage.textContent = '';
+        statusMessage.className = '';
+    }, 3000);
+}

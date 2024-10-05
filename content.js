@@ -8,7 +8,8 @@ let analysisEnabled = true;
 let apiKey = null;
 let inputArea = null;
 let suggestionsVisible = false;
-let errorNotified = false; // New variable to track error notification
+let errorNotified = false; // To prevent multiple error notifications
+let confettiActive = false; // To track if confetti is active
 
 // Load user settings
 chrome.storage.sync.get(['analysisEnabled', 'apiKey'], (data) => {
@@ -31,6 +32,20 @@ chrome.storage.onChanged.addListener((changes) => {
     }
 });
 
+// Listen for messages from other parts of the extension
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'openSettings') {
+        openSettingsPage();
+    }
+});
+
+// Function to open the settings page
+function openSettingsPage() {
+    chrome.runtime.getURL('settings.html', function(url) {
+        chrome.tabs.create({ url: url });
+    });
+}
+
 // Function to initialize the extension
 function initialize() {
     console.log('Initializing Mindful Prompt extension...');
@@ -40,6 +55,7 @@ function initialize() {
         const potentialInputAreas = [
             'div#prompt-textarea[contenteditable="true"]',
             'div.ProseMirror[contenteditable="true"]',
+            'textarea', // Backup selector
         ];
 
         for (let selector of potentialInputAreas) {
@@ -120,9 +136,8 @@ function setupEventListeners() {
             console.log('Accessing value property.');
             currentPrompt = inputArea.value;
         } else {
-            console.log('Accessing innerText/textContent.');
-            const promptParagraph = inputArea.querySelector('p');
-            currentPrompt = promptParagraph ? promptParagraph.innerText.trim() : inputArea.textContent.trim();
+            console.log('Accessing innerText.');
+            currentPrompt = inputArea.innerText.trim();
         }
 
         console.log("Current prompt:", currentPrompt);
@@ -143,8 +158,13 @@ function setupEventListeners() {
             lastWordCount = currentWordCount;
             lastAnalysisTime = currentTime;
 
-            analyzePrompt(currentPrompt).then(({ score, suggestions }) => {
-                displayFeedback(score, suggestions);
+            analyzePrompt(currentPrompt).then(({ score, suggestions, error }) => {
+                if (!error) {
+                    displayFeedback(score, suggestions);
+                } else {
+                    // Do not display grade or suggestions
+                    resetFeedback();
+                }
                 savePromptData(currentPrompt, score);
             }).catch(error => {
                 console.error("Error in analyzePrompt:", error);
@@ -259,8 +279,11 @@ function displayFeedback(score, suggestions) {
 
         progressBarFill.style.transition = 'width 0.5s ease-in-out, background 0.5s ease-in-out';
 
-        if (score >= 75) {
+        if (score >= 75 && !confettiActive) {
             triggerCelebration();
+            confettiActive = true;
+        } else if (score < 75 && confettiActive) {
+            confettiActive = false;
         }
     }
 
@@ -350,7 +373,10 @@ async function analyzePrompt(prompt) {
                 },
                 body: JSON.stringify({
                     model: 'gpt-3.5-turbo',
-                    messages: [{ role: 'user', content: `Please evaluate the following prompt on a scale of 0 to 100, considering how detailed and specific it is, where 100 is excellent and 0 is very poor. I wrote the prompt and I want to know if I am using AI in a lazy manner, and your grade will help me figure that out. Also, provide up to 2 suggestions on what could be expanded upon or made more detailed, focusing on areas worth expanding. Provide the score as 'Score: X' and the suggestions as a numbered list.\n\n"${prompt}"` }],
+                    messages: [{
+                        role: 'user',
+                        content: `Please evaluate the following prompt on a scale of 0 to 100, considering how detailed and specific it is, where 100 is excellent and 0 is very poor. I wrote the prompt and I want to know if I am using AI in a lazy manner, and your grade will help me figure that out. Also, provide up to 2 suggestions on what could be expanded upon or made more detailed, focusing on areas worth expanding. Provide the score as 'Score: X' and the suggestions as a numbered list.\n\n"${prompt}"`
+                    }],
                     max_tokens: 150,
                     temperature: 0.7
                 })
@@ -363,7 +389,7 @@ async function analyzePrompt(prompt) {
                     showErrorNotification('API Error: ' + data.error.message);
                     errorNotified = true;
                 }
-                return basicAnalyzePrompt(prompt);
+                return { error: true };
             }
 
             const analysis = data.choices[0].message.content;
@@ -372,22 +398,21 @@ async function analyzePrompt(prompt) {
             // Now parse the analysis to extract the score and suggestions
             const scoreMatch = analysis.match(/Score:\s*(\d+)/i);
             let score = scoreMatch ? parseInt(scoreMatch[1], 10) : null;
-            score = score * 2; // Adjust score scaling
 
             // Get suggestions by splitting numbered list
-            let suggestions = analysis.split('\n').filter(line => /^\d+[\).\s]/.test(line.trim())).map(line => line.replace(/^\d+[\).\s]/, '').trim()).slice(0,2);
+            let suggestions = analysis.split('\n').filter(line => /^\d+[\).\s]/.test(line.trim())).map(line => line.replace(/^\d+[\).\s]/, '').trim()).slice(0, 2);
 
             if (score !== null) {
                 console.log(`API returned score: ${score}`);
                 console.log(`API returned suggestions: ${suggestions}`);
-                return { score, suggestions };
+                return { score, suggestions, error: false };
             } else {
                 console.warn("Received invalid score from API:", analysis);
                 if (!errorNotified) {
                     showErrorNotification('Invalid response from API. Please check your API key.');
                     errorNotified = true;
                 }
-                return basicAnalyzePrompt(prompt);
+                return { error: true };
             }
         } catch (error) {
             console.error('API Error:', error);
@@ -395,7 +420,7 @@ async function analyzePrompt(prompt) {
                 showErrorNotification('Error communicating with API. Please check your API key.');
                 errorNotified = true;
             }
-            return basicAnalyzePrompt(prompt);
+            return { error: true };
         }
     } else {
         console.log("API Key not provided. Using basic prompt analysis.");
@@ -403,7 +428,7 @@ async function analyzePrompt(prompt) {
             showErrorNotification('API Key not provided. Please enter your API key in the settings page.');
             errorNotified = true;
         }
-        return basicAnalyzePrompt(prompt);
+        return { error: true };
     }
 }
 
@@ -429,13 +454,34 @@ function showErrorNotification(message) {
 
         // Auto-dismiss after 10 seconds
         setTimeout(() => {
-            notification.remove();
-            errorNotified = false;
+            if (document.body.contains(notification)) {
+                notification.remove();
+                errorNotified = false;
+            }
         }, 10000);
     }
 }
 
-// Basic prompt analysis function
+// Function to reset feedback in case of error
+function resetFeedback() {
+    let progressBarFill = document.getElementById('progressBarFill');
+    let progressBarText = document.getElementById('progressBarText');
+    let suggestionContent = document.getElementById('suggestionContent');
+    let suggestionButton = document.getElementById('suggestionButton');
+
+    if (progressBarFill && progressBarText) {
+        progressBarFill.style.width = `0%`;
+        progressBarText.textContent = `0%`;
+        progressBarFill.style.background = `linear-gradient(90deg, #e74c3c, #8e44ad)`;
+    }
+
+    if (suggestionContent && suggestionButton) {
+        suggestionContent.innerHTML = '';
+        suggestionButton.style.display = 'none';
+    }
+}
+
+// Basic prompt analysis function (not used when API is available)
 function basicAnalyzePrompt(prompt) {
     let score = 0;
     let criteriaMet = 0;
@@ -451,7 +497,7 @@ function basicAnalyzePrompt(prompt) {
     score = ((criteriaMet / totalCriteria) * 100) + 30; // Adjusted to give higher grades
     if (score > 100) score = 100;
     console.log(`Basic prompt score: ${score}`);
-    return { score: Math.round(score), suggestions: suggestions.slice(0,2) };
+    return { score: Math.round(score), suggestions: suggestions.slice(0, 2), error: false };
 }
 
 // Criterion functions
