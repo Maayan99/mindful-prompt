@@ -478,46 +478,6 @@ function resetFeedback() {
     }
 }
 
-// Basic prompt analysis function (not used when API is available)
-function basicAnalyzePrompt(prompt) {
-    let score = 0;
-    let criteriaMet = 0;
-    let totalCriteria = 5;
-    let suggestions = [];
-
-    if (checkClarity(prompt)) criteriaMet++; else suggestions.push('Consider clarifying your prompt with more details.');
-    if (checkSpecificity(prompt)) criteriaMet++; else suggestions.push('Include specific keywords or instructions.');
-    if (checkLength(prompt)) criteriaMet++; else suggestions.push('Provide more context to your prompt.');
-    if (checkStructure(prompt)) criteriaMet++; else suggestions.push('Check the grammar and punctuation.');
-    if (checkQuestionType(prompt)) criteriaMet++; else suggestions.push('Ask open-ended questions to get detailed responses.');
-
-    score = ((criteriaMet / totalCriteria) * 100) + 30; // Adjusted to give higher grades
-    if (score > 100) score = 100;
-    console.log(`Basic prompt score: ${score}`);
-    return {score: Math.round(score), suggestions: suggestions.slice(0, 2), error: false};
-}
-
-// Criterion functions
-function checkClarity(prompt) {
-    return prompt.length > 20;
-}
-
-function checkSpecificity(prompt) {
-    return /(?:\b(?:specifically|detailed|details|exactly|precisely|step-by-step)\b)/i.test(prompt);
-}
-
-function checkLength(prompt) {
-    return prompt.length >= 50 && prompt.length <= 500;
-}
-
-function checkStructure(prompt) {
-    return /^[A-Z].*[.!?]$/.test(prompt.trim());
-}
-
-function checkQuestionType(prompt) {
-    return /how|what|why|describe|explain|tell me about|show me/i.test(prompt);
-}
-
 // Function to save prompt data (for analytics)
 function savePromptData(prompt, score) {
     chrome.storage.local.get('promptHistory', (data) => {
