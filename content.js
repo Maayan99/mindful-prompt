@@ -150,7 +150,7 @@ function setupEventListeners() {
         const currentTime = Date.now();
         const timeSinceLastAnalysis = currentTime - lastAnalysisTime;
 
-        if (timeSinceLastAnalysis >= 5000 && wordCountDifference >= 8) {
+        if (timeSinceLastAnalysis >= 5000 && wordCountDifference >= 5) {
             lastPrompt = currentPrompt;
             lastWordCount = currentWordCount;
             lastAnalysisTime = currentTime;
