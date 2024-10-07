@@ -1,29 +1,32 @@
 <!-- settings.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>API Key Settings</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icons/icon48.png">
 </head>
 <body>
-<div class="settings-container">
-    <h1>API Key Settings</h1>
-    <p>Enter your OpenAI API key to enable advanced prompt analysis.</p>
-    <input type="password" id="apiKeyInput" placeholder="Enter your API key">
-    <button id="saveApiKeyBtn">Save</button>
-    <p id="statusMessage"></p>
-    <div class="api-key-info">
-        <h2>How to Get Your OpenAI API Key</h2>
-        <ol>
-            <li>Visit the <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys Page</a>.</li>
-            <li>Log in or sign up for an account if you haven't already.</li>
-            <li>Click on "Create new secret key" and copy the generated key.</li>
-            <li>Paste the key into the input field above and click "Save".</li>
-        </ol>
-        <p>Your API key will be stored locally and used to enhance the prompt analysis features of this extension.</p>
+    <div class="settings-container">
+        <h1>API Key Settings</h1>
+        <div class="api-key-section">
+            <input type="password" id="apiKeyInput" placeholder="Enter your API key" class="input-field">
+            <button id="saveApiKeyBtn" class="btn">Save</button>
+            <p id="statusMessage" class="status-message"></p>
+        </div>
+        <div class="api-key-info">
+            <h2>How to Get Your OpenAI API Key</h2>
+            <ol>
+                <li>Visit the <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys Page</a>.</li>
+                <li>Log in or sign up for an account if you haven't already.</li>
+                <li>Click on "Create new secret key" and copy the generated key.</li>
+                <li>Paste the key into the input field above and click "Save".</li>
+            </ol>
+            <p>Your API key will be stored securely and used to enhance the prompt analysis features of this extension.</p>
+        </div>
+        <div id="toast" class="toast"></div>
     </div>
-</div>
-<script src="settings.js"></script>
+    <script src="settings.js"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleAnalysis = document.getElementById('toggleAnalysis');
     const toggleLabel = document.getElementById('toggleLabel');
     const settingsButton = document.getElementById('settingsButton');
+    const toast = document.getElementById('toast');
 
     // Load the current state
     chrome.storage.sync.get('analysisEnabled', (data) => {
@@ -32,22 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to show toast notifications
     function showToast(message) {
-        // Create toast container if it doesn't exist
-        let toast = document.getElementById('toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toast';
-            toast.className = 'toast';
-            document.body.appendChild(toast);
-        }
-
-        // Set the message and show the toast
+        if (!toast) return;
         toast.textContent = message;
-        toast.className = 'toast show';
+        toast.classList.add('show');
 
         // Hide the toast after 3 seconds
         setTimeout(() => {
-            toast.className = toast.className.replace('show', '');
+            toast.classList.remove('show');
         }, 3000);
     }
 });

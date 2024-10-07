@@ -1,10 +1,11 @@
 <!-- popup.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Mindful Prompt</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icons/icon48.png">
 </head>
 <body>
     <div class="popup-container">
@@ -12,11 +13,12 @@
         <div class="toggle-container">
             <label class="switch">
                 <input type="checkbox" id="toggleAnalysis">
-                <span class="slider round"></span>
+                <span class="slider"></span>
             </label>
             <span id="toggleLabel">Enable Analysis</span>
         </div>
-        <button id="settingsButton">API Key Settings</button>
+        <button id="settingsButton" class="btn">API Key Settings</button>
+        <div id="toast" class="toast"></div>
     </div>
     <script src="popup.js"></script>
 </body>
